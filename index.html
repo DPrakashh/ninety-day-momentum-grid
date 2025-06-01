@@ -1,26 +1,705 @@
+
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ninety-day-momentum-grid</title>
-    <meta name="description" content="Lovable Generated Project" />
-    <meta name="author" content="Lovable" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>90-Day Challenge Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    <meta property="og:title" content="ninety-day-momentum-grid" />
-    <meta property="og:description" content="Lovable Generated Project" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #f0fdf4 100%);
+            min-height: 100vh;
+            color: #1f2937;
+            line-height: 1.6;
+        }
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@lovable_dev" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-  </head>
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
 
-  <body>
-    <div id="root"></div>
-    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
-    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #6b7280;
+            font-size: 1.1rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Pomodoro Timer Styles */
+        .timer-section {
+            text-align: center;
+        }
+
+        .timer-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .timer-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .timer-circle {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 2rem;
+        }
+
+        .timer-svg {
+            width: 200px;
+            height: 200px;
+            transform: rotate(-90deg);
+        }
+
+        .timer-background {
+            fill: none;
+            stroke: #f3f4f6;
+            stroke-width: 8;
+        }
+
+        .timer-progress {
+            fill: none;
+            stroke: #10b981;
+            stroke-width: 8;
+            stroke-linecap: round;
+            transition: stroke-dasharray 1s ease;
+        }
+
+        .timer-display {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+            transform: translateY(-1px);
+        }
+
+        .sessions-counter {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        /* Todo List Styles */
+        .todo-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .todo-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .todo-input-container {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .todo-input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .todo-input:focus {
+            outline: none;
+            border-color: #10b981;
+        }
+
+        .todo-list {
+            list-style: none;
+        }
+
+        .todo-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            background: #f9fafb;
+            transition: all 0.2s ease;
+        }
+
+        .todo-item:hover {
+            background: #f3f4f6;
+        }
+
+        .todo-checkbox {
+            width: 1.25rem;
+            height: 1.25rem;
+            margin-right: 1rem;
+            accent-color: #10b981;
+        }
+
+        .todo-text {
+            flex: 1;
+            font-size: 1rem;
+        }
+
+        .todo-text.completed {
+            text-decoration: line-through;
+            color: #9ca3af;
+        }
+
+        .todo-delete {
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            cursor: pointer;
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .todo-item:hover .todo-delete {
+            opacity: 1;
+        }
+
+        /* Heatmap Styles */
+        .heatmap-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .heatmap-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+
+        .heatmap-grid {
+            display: grid;
+            grid-template-columns: repeat(13, 1fr);
+            gap: 0.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .heatmap-cell {
+            width: 1rem;
+            height: 1rem;
+            border-radius: 0.125rem;
+            background: #edf2f7;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .heatmap-cell.level-1 { background: #dcfce7; }
+        .heatmap-cell.level-2 { background: #bbf7d0; }
+        .heatmap-cell.level-3 { background: #86efac; }
+        .heatmap-cell.level-4 { background: #4ade80; }
+        .heatmap-cell.level-5 { background: #22c55e; }
+
+        .heatmap-cell:hover {
+            transform: scale(1.2);
+            z-index: 10;
+        }
+
+        .tooltip {
+            position: absolute;
+            bottom: 120%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #111827;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+            z-index: 20;
+        }
+
+        .heatmap-cell:hover .tooltip {
+            opacity: 1;
+        }
+
+        .heatmap-legend {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        .legend-item {
+            width: 0.75rem;
+            height: 0.75rem;
+            border-radius: 0.125rem;
+        }
+
+        /* Visitor Counter Styles */
+        .visitor-counter {
+            text-align: center;
+            padding: 1rem;
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            color: #6b7280;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .timer-circle {
+                width: 150px;
+                height: 150px;
+            }
+
+            .timer-svg {
+                width: 150px;
+                height: 150px;
+            }
+
+            .timer-display {
+                font-size: 1.5rem;
+            }
+
+            .heatmap-grid {
+                grid-template-columns: repeat(10, 1fr);
+            }
+
+            .heatmap-cell {
+                width: 0.8rem;
+                height: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>90-Day Challenge Tracker</h1>
+            <p>Build lasting habits, one day at a time</p>
+        </div>
+
+        <!-- Pomodoro Timer Section -->
+        <div class="card">
+            <div class="timer-section">
+                <div class="timer-header">
+                    <span style="font-size: 1.5rem;">⏱️</span>
+                    <h2>Focus Timer</h2>
+                </div>
+                
+                <div class="timer-circle">
+                    <svg class="timer-svg" viewBox="0 0 100 100">
+                        <circle class="timer-background" cx="50" cy="50" r="45"></circle>
+                        <circle id="timer-progress" class="timer-progress" cx="50" cy="50" r="45" 
+                                stroke-dasharray="0 283" stroke-dashoffset="0"></circle>
+                    </svg>
+                    <div class="timer-display" id="timer-display">25:00</div>
+                </div>
+
+                <div class="timer-controls">
+                    <button class="btn btn-primary" id="start-btn">
+                        <span>▶️</span> Start
+                    </button>
+                    <button class="btn btn-secondary" id="pause-btn">
+                        <span>⏸️</span> Pause
+                    </button>
+                    <button class="btn btn-secondary" id="reset-btn">
+                        <span>🔄</span> Reset
+                    </button>
+                </div>
+
+                <div class="sessions-counter">
+                    Completed sessions: <span id="sessions-count">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Todo List Section -->
+        <div class="card">
+            <div class="todo-header">
+                <span style="font-size: 1.5rem;">✅</span>
+                <h2>Today's Tasks</h2>
+            </div>
+
+            <div class="todo-input-container">
+                <input type="text" class="todo-input" id="todo-input" placeholder="Add a new task...">
+                <button class="btn btn-primary" id="add-todo-btn">Add Task</button>
+            </div>
+
+            <ul class="todo-list" id="todo-list"></ul>
+        </div>
+
+        <!-- Heatmap Grid Section -->
+        <div class="card">
+            <div class="heatmap-header">
+                <span style="font-size: 1.5rem;">🔥</span>
+                <h2>90-Day Progress</h2>
+            </div>
+
+            <div class="heatmap-grid" id="heatmap-grid"></div>
+
+            <div class="heatmap-legend">
+                <span>Less</span>
+                <div class="legend-item" style="background: #edf2f7;"></div>
+                <div class="legend-item" style="background: #dcfce7;"></div>
+                <div class="legend-item" style="background: #bbf7d0;"></div>
+                <div class="legend-item" style="background: #86efac;"></div>
+                <div class="legend-item" style="background: #4ade80;"></div>
+                <div class="legend-item" style="background: #22c55e;"></div>
+                <span>More</span>
+            </div>
+        </div>
+
+        <!-- Visitor Counter -->
+        <div class="visitor-counter">
+            👀 <span id="visitor-count">1,247</span> people have visited this page
+        </div>
+    </div>
+
+    <script>
+        // Pomodoro Timer Logic
+        class PomodoroTimer {
+            constructor() {
+                this.timeLeft = 25 * 60; // 25 minutes in seconds
+                this.isRunning = false;
+                this.completedSessions = parseInt(localStorage.getItem('completedSessions') || '0');
+                this.interval = null;
+                
+                this.timerDisplay = document.getElementById('timer-display');
+                this.timerProgress = document.getElementById('timer-progress');
+                this.sessionsCount = document.getElementById('sessions-count');
+                this.startBtn = document.getElementById('start-btn');
+                this.pauseBtn = document.getElementById('pause-btn');
+                this.resetBtn = document.getElementById('reset-btn');
+                
+                this.init();
+            }
+            
+            init() {
+                this.updateDisplay();
+                this.updateSessions();
+                
+                this.startBtn.addEventListener('click', () => this.start());
+                this.pauseBtn.addEventListener('click', () => this.pause());
+                this.resetBtn.addEventListener('click', () => this.reset());
+            }
+            
+            start() {
+                if (!this.isRunning) {
+                    this.isRunning = true;
+                    this.interval = setInterval(() => this.tick(), 1000);
+                }
+            }
+            
+            pause() {
+                this.isRunning = false;
+                clearInterval(this.interval);
+            }
+            
+            reset() {
+                this.pause();
+                this.timeLeft = 25 * 60;
+                this.updateDisplay();
+            }
+            
+            tick() {
+                if (this.timeLeft > 0) {
+                    this.timeLeft--;
+                    this.updateDisplay();
+                } else {
+                    this.complete();
+                }
+            }
+            
+            complete() {
+                this.pause();
+                this.completedSessions++;
+                localStorage.setItem('completedSessions', this.completedSessions.toString());
+                this.updateSessions();
+                this.timeLeft = 25 * 60;
+                this.updateDisplay();
+                
+                // Add to today's task completion
+                todoList.updateTodayProgress();
+            }
+            
+            updateDisplay() {
+                const minutes = Math.floor(this.timeLeft / 60);
+                const seconds = this.timeLeft % 60;
+                this.timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                const progress = ((25 * 60 - this.timeLeft) / (25 * 60)) * 283;
+                this.timerProgress.setAttribute('stroke-dasharray', `${progress} 283`);
+            }
+            
+            updateSessions() {
+                this.sessionsCount.textContent = this.completedSessions;
+            }
+        }
+
+        // Todo List Logic
+        class TodoList {
+            constructor() {
+                this.todos = JSON.parse(localStorage.getItem('todos') || '[]');
+                this.todoList = document.getElementById('todo-list');
+                this.todoInput = document.getElementById('todo-input');
+                this.addTodoBtn = document.getElementById('add-todo-btn');
+                
+                this.init();
+            }
+            
+            init() {
+                this.render();
+                
+                this.addTodoBtn.addEventListener('click', () => this.addTodo());
+                this.todoInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.addTodo();
+                });
+            }
+            
+            addTodo() {
+                const text = this.todoInput.value.trim();
+                if (text) {
+                    const todo = {
+                        id: Date.now(),
+                        text: text,
+                        completed: false,
+                        date: new Date().toDateString()
+                    };
+                    this.todos.push(todo);
+                    this.saveTodos();
+                    this.todoInput.value = '';
+                    this.render();
+                }
+            }
+            
+            toggleTodo(id) {
+                const todo = this.todos.find(t => t.id === id);
+                if (todo) {
+                    todo.completed = !todo.completed;
+                    this.saveTodos();
+                    this.render();
+                    this.updateTodayProgress();
+                }
+            }
+            
+            deleteTodo(id) {
+                this.todos = this.todos.filter(t => t.id !== id);
+                this.saveTodos();
+                this.render();
+                this.updateTodayProgress();
+            }
+            
+            render() {
+                const today = new Date().toDateString();
+                const todayTodos = this.todos.filter(todo => todo.date === today);
+                
+                this.todoList.innerHTML = todayTodos.map(todo => `
+                    <li class="todo-item">
+                        <input type="checkbox" class="todo-checkbox" ${todo.completed ? 'checked' : ''} 
+                               onchange="todoList.toggleTodo(${todo.id})">
+                        <span class="todo-text ${todo.completed ? 'completed' : ''}">${todo.text}</span>
+                        <button class="todo-delete" onclick="todoList.deleteTodo(${todo.id})">Delete</button>
+                    </li>
+                `).join('');
+            }
+            
+            saveTodos() {
+                localStorage.setItem('todos', JSON.stringify(this.todos));
+            }
+            
+            updateTodayProgress() {
+                const today = new Date().toDateString();
+                const todayTodos = this.todos.filter(todo => todo.date === today);
+                const completedTodos = todayTodos.filter(todo => todo.completed);
+                const percentage = todayTodos.length > 0 ? Math.round((completedTodos.length / todayTodos.length) * 100) : 0;
+                
+                heatmapGrid.updateToday(percentage);
+            }
+        }
+
+        // Heatmap Grid Logic
+        class HeatmapGrid {
+            constructor() {
+                this.heatmapGrid = document.getElementById('heatmap-grid');
+                this.progressData = JSON.parse(localStorage.getItem('progressData') || '{}');
+                this.startDate = new Date();
+                this.startDate.setDate(this.startDate.getDate() - 89); // Start 89 days ago for 90-day view
+                
+                this.init();
+            }
+            
+            init() {
+                this.render();
+            }
+            
+            render() {
+                const cells = [];
+                
+                for (let i = 0; i < 90; i++) {
+                    const date = new Date(this.startDate);
+                    date.setDate(date.getDate() + i);
+                    const dateStr = date.toDateString();
+                    const progress = this.progressData[dateStr] || 0;
+                    const level = this.getLevel(progress);
+                    
+                    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                                      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                    const formattedDate = `${monthNames[date.getMonth()]} ${date.getDate()}`;
+                    
+                    cells.push(`
+                        <div class="heatmap-cell level-${level}" data-date="${dateStr}">
+                            <div class="tooltip">${formattedDate} - ${progress}% Tasks Completed</div>
+                        </div>
+                    `);
+                }
+                
+                this.heatmapGrid.innerHTML = cells.join('');
+            }
+            
+            getLevel(percentage) {
+                if (percentage === 0) return 0;
+                if (percentage <= 20) return 1;
+                if (percentage <= 40) return 2;
+                if (percentage <= 60) return 3;
+                if (percentage <= 80) return 4;
+                return 5;
+            }
+            
+            updateToday(percentage) {
+                const today = new Date().toDateString();
+                this.progressData[today] = percentage;
+                localStorage.setItem('progressData', JSON.stringify(this.progressData));
+                this.render();
+            }
+        }
+
+        // Visitor Counter Logic
+        class VisitorCounter {
+            constructor() {
+                this.visitorCount = document.getElementById('visitor-count');
+                this.init();
+            }
+            
+            init() {
+                // Simulate visitor count with some randomness
+                const baseCount = 1247;
+                const randomVariation = Math.floor(Math.random() * 50) - 25;
+                const count = baseCount + randomVariation;
+                
+                this.animateCounter(count);
+            }
+            
+            animateCounter(targetCount) {
+                let currentCount = 0;
+                const increment = Math.ceil(targetCount / 50);
+                const timer = setInterval(() => {
+                    currentCount += increment;
+                    if (currentCount >= targetCount) {
+                        currentCount = targetCount;
+                        clearInterval(timer);
+                    }
+                    this.visitorCount.textContent = currentCount.toLocaleString();
+                }, 30);
+            }
+        }
+
+        // Initialize all components
+        const pomodoroTimer = new PomodoroTimer();
+        const todoList = new TodoList();
+        const heatmapGrid = new HeatmapGrid();
+        const visitorCounter = new VisitorCounter();
+    </script>
+</body>
 </html>
