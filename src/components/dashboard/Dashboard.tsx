@@ -7,6 +7,7 @@ import { LogOut, Users, Moon, Sun } from 'lucide-react';
 import PomodoroTimer from './PomodoroTimer';
 import TodoList from './TodoList';
 import HeatmapTracker from './HeatmapTracker';
+import TodayStats from './TodayStats';
 import { supabase } from '@/integrations/supabase/client';
 
 const Dashboard = () => {
@@ -87,15 +88,27 @@ const Dashboard = () => {
         </div>
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
           {/* Pomodoro Timer */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-2">
             <PomodoroTimer />
           </div>
 
+          {/* Today's Stats */}
+          <div className="lg:col-span-1">
+            <TodayStats />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           {/* Todo List */}
           <div className="lg:col-span-1">
             <TodoList />
+          </div>
+
+          {/* Placeholder for future feature or move heatmap here */}
+          <div className="lg:col-span-1">
+            {/* This space could be used for weekly stats or other features */}
           </div>
         </div>
 

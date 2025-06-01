@@ -3,17 +3,31 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Play, Pause, RotateCcw } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 const PomodoroTimer = () => {
   const [duration, setDuration] = useState([25]);
   const [timeLeft, setTimeLeft] = useState(25 * 60);
   const [isActive, setIsActive] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const [category, setCategory] = useState('study');
+  const [todayTotal, setTodayTotal] = useState(0);
+  const { user } = useAuth();
+  const { toast } = useToast();
 
   useEffect(() => {
     setTimeLeft(duration[0] * 60);
   }, [duration]);
+
+  useEffect(() => {
+    if (user) {
+      fetchTodayTotal();
+    }
+  }, [user]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
@@ -22,16 +36,56 @@ const PomodoroTimer = () => {
       interval = setInterval(() => {
         setTimeLeft(timeLeft => timeLeft - 1);
       }, 1000);
-    } else if (timeLeft === 0) {
+    } else if (timeLeft === 0 && isActive) {
       setIsActive(false);
       setIsPaused(false);
-      // Timer completed - could add notification here
+      handleSessionComplete();
     }
 
     return () => {
       if (interval) clearInterval(interval);
     };
   }, [isActive, isPaused, timeLeft]);
+
+  const fetchTodayTotal = async () => {
+    if (!user) return;
+    
+    const today = new Date().toISOString().split('T')[0];
+    const { data, error } = await supabase
+      .from('focus_sessions')
+      .select('duration_minutes, category')
+      .eq('user_id', user.id)
+      .eq('date', today);
+
+    if (!error && data) {
+      const total = data.reduce((sum, session) => sum + session.duration_minutes, 0);
+      setTodayTotal(total);
+    }
+  };
+
+  const handleSessionComplete = async () => {
+    if (!user) return;
+
+    const completedMinutes = duration[0];
+    const today = new Date().toISOString().split('T')[0];
+
+    const { error } = await supabase
+      .from('focus_sessions')
+      .insert({
+        user_id: user.id,
+        duration_minutes: completedMinutes,
+        category: category,
+        date: today
+      });
+
+    if (!error) {
+      setTodayTotal(prev => prev + completedMinutes);
+      toast({
+        title: "Session Complete! 🎉",
+        description: `Great job! You completed ${completedMinutes} minutes of ${category}.`,
+      });
+    }
+  };
 
   const handleStart = () => {
     setIsActive(true);
@@ -56,13 +110,25 @@ const PomodoroTimer = () => {
 
   const progress = ((duration[0] * 60 - timeLeft) / (duration[0] * 60)) * 100;
 
+  const getCategoryEmoji = (cat: string) => {
+    switch (cat) {
+      case 'study': return '📚';
+      case 'skills': return '💡';
+      case 'health': return '💪';
+      default: return '⏱️';
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
         <CardTitle className="text-center">⏱️ Focus Timer</CardTitle>
         <p className="text-center text-sm text-gray-600 dark:text-gray-400">
-          Focusing for {duration[0]} minutes
+          Focusing for {duration[0]} minutes on {getCategoryEmoji(category)} {category}
         </p>
+        <div className="text-center text-sm font-medium text-blue-600 dark:text-blue-400">
+          Today's Total: {todayTotal} minutes
+        </div>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="flex justify-center">
@@ -117,6 +183,22 @@ const PomodoroTimer = () => {
               disabled={isActive}
               className="w-full"
             />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+              Category
+            </label>
+            <Select value={category} onValueChange={setCategory} disabled={isActive}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="study">📚 Study</SelectItem>
+                <SelectItem value="skills">💡 Skills</SelectItem>
+                <SelectItem value="health">💪 Health</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="flex justify-center gap-2">
