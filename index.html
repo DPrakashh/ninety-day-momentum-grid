@@ -7,6 +7,34 @@
     <title>90-Day Challenge Tracker</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-primary: #f8fafc;
+            --bg-secondary: #f0fdf4;
+            --bg-card: white;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --text-muted: #9ca3af;
+            --border-color: #e5e7eb;
+            --accent-color: #10b981;
+            --accent-hover: #059669;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-hover: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #64748b;
+            --border-color: #334155;
+            --accent-color: #22c55e;
+            --accent-hover: #16a34a;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+            --shadow-hover: 0 10px 25px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -15,10 +43,11 @@
 
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #f8fafc 0%, #f0fdf4 100%);
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
             min-height: 100vh;
-            color: #1f2937;
+            color: var(--text-primary);
             line-height: 1.6;
+            transition: all 0.3s ease;
         }
 
         .container {
@@ -30,32 +59,88 @@
         .header {
             text-align: center;
             margin-bottom: 3rem;
+            position: relative;
         }
 
         .header h1 {
             font-size: 2.5rem;
             font-weight: 700;
-            color: #111827;
+            color: var(--text-primary);
             margin-bottom: 0.5rem;
         }
 
         .header p {
-            color: #6b7280;
+            color: var(--text-secondary);
             font-size: 1.1rem;
         }
 
+        .theme-toggle {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-primary);
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+
         .card {
-            background: white;
+            background: var(--bg-card);
             border-radius: 1rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            box-shadow: var(--shadow);
             padding: 2rem;
             margin-bottom: 2rem;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 1px solid var(--border-color);
         }
 
         .card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* Timer Controls */
+        .timer-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .timer-duration-toggle {
+            display: flex;
+            background: var(--border-color);
+            border-radius: 0.5rem;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .duration-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .duration-btn.active {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .duration-btn:hover:not(.active) {
+            background: var(--bg-card);
         }
 
         /* Pomodoro Timer Styles */
@@ -74,6 +159,7 @@
             font-size: 1.5rem;
             font-weight: 600;
             margin-left: 0.5rem;
+            color: var(--text-primary);
         }
 
         .timer-circle {
@@ -91,13 +177,13 @@
 
         .timer-background {
             fill: none;
-            stroke: #f3f4f6;
+            stroke: var(--border-color);
             stroke-width: 8;
         }
 
         .timer-progress {
             fill: none;
-            stroke: #10b981;
+            stroke: var(--accent-color);
             stroke-width: 8;
             stroke-linecap: round;
             transition: stroke-dasharray 1s ease;
@@ -110,14 +196,7 @@
             transform: translate(-50%, -50%);
             font-size: 2rem;
             font-weight: 600;
-            color: #111827;
-        }
-
-        .timer-controls {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            margin-bottom: 1rem;
+            color: var(--text-primary);
         }
 
         .btn {
@@ -133,27 +212,27 @@
         }
 
         .btn-primary {
-            background: #10b981;
+            background: var(--accent-color);
             color: white;
         }
 
         .btn-primary:hover {
-            background: #059669;
+            background: var(--accent-hover);
             transform: translateY(-1px);
         }
 
         .btn-secondary {
-            background: #f3f4f6;
-            color: #374151;
+            background: var(--border-color);
+            color: var(--text-secondary);
         }
 
         .btn-secondary:hover {
-            background: #e5e7eb;
+            background: var(--text-muted);
             transform: translateY(-1px);
         }
 
         .sessions-counter {
-            color: #6b7280;
+            color: var(--text-secondary);
             font-size: 0.9rem;
         }
 
@@ -168,6 +247,7 @@
             font-size: 1.5rem;
             font-weight: 600;
             margin-left: 0.5rem;
+            color: var(--text-primary);
         }
 
         .todo-input-container {
@@ -179,15 +259,17 @@
         .todo-input {
             flex: 1;
             padding: 0.75rem;
-            border: 2px solid #e5e7eb;
+            border: 2px solid var(--border-color);
             border-radius: 0.5rem;
             font-size: 1rem;
             transition: border-color 0.2s ease;
+            background: var(--bg-card);
+            color: var(--text-primary);
         }
 
         .todo-input:focus {
             outline: none;
-            border-color: #10b981;
+            border-color: var(--accent-color);
         }
 
         .todo-list {
@@ -200,29 +282,31 @@
             padding: 1rem;
             border-radius: 0.5rem;
             margin-bottom: 0.5rem;
-            background: #f9fafb;
+            background: var(--bg-primary);
             transition: all 0.2s ease;
+            border: 1px solid var(--border-color);
         }
 
         .todo-item:hover {
-            background: #f3f4f6;
+            background: var(--border-color);
         }
 
         .todo-checkbox {
             width: 1.25rem;
             height: 1.25rem;
             margin-right: 1rem;
-            accent-color: #10b981;
+            accent-color: var(--accent-color);
         }
 
         .todo-text {
             flex: 1;
             font-size: 1rem;
+            color: var(--text-primary);
         }
 
         .todo-text.completed {
             text-decoration: line-through;
-            color: #9ca3af;
+            color: var(--text-muted);
         }
 
         .todo-delete {
@@ -252,6 +336,7 @@
             font-size: 1.5rem;
             font-weight: 600;
             margin-left: 0.5rem;
+            color: var(--text-primary);
         }
 
         .heatmap-grid {
@@ -265,7 +350,7 @@
             width: 1rem;
             height: 1rem;
             border-radius: 0.125rem;
-            background: #edf2f7;
+            background: var(--border-color);
             transition: all 0.2s ease;
             cursor: pointer;
             position: relative;
@@ -287,8 +372,8 @@
             bottom: 120%;
             left: 50%;
             transform: translateX(-50%);
-            background: #111827;
-            color: white;
+            background: var(--text-primary);
+            color: var(--bg-card);
             padding: 0.5rem;
             border-radius: 0.25rem;
             font-size: 0.8rem;
@@ -308,7 +393,7 @@
             align-items: center;
             gap: 0.5rem;
             font-size: 0.8rem;
-            color: #6b7280;
+            color: var(--text-secondary);
         }
 
         .legend-item {
@@ -321,10 +406,11 @@
         .visitor-counter {
             text-align: center;
             padding: 1rem;
-            background: white;
+            background: var(--bg-card);
             border-radius: 0.5rem;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-            color: #6b7280;
+            box-shadow: var(--shadow);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
         }
 
         /* Responsive Design */
@@ -335,6 +421,11 @@
 
             .header h1 {
                 font-size: 2rem;
+            }
+
+            .theme-toggle {
+                position: relative;
+                margin-bottom: 1rem;
             }
 
             .timer-circle {
@@ -359,6 +450,16 @@
                 width: 0.8rem;
                 height: 0.8rem;
             }
+
+            .timer-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .timer-duration-toggle {
+                width: 100%;
+                max-width: 200px;
+            }
         }
     </style>
 </head>
@@ -366,6 +467,9 @@
     <div class="container">
         <!-- Header -->
         <div class="header">
+            <button class="theme-toggle" id="theme-toggle">
+                <span id="theme-icon">🌙</span>
+            </button>
             <h1>90-Day Challenge Tracker</h1>
             <p>Build lasting habits, one day at a time</p>
         </div>
@@ -376,6 +480,11 @@
                 <div class="timer-header">
                     <span style="font-size: 1.5rem;">⏱️</span>
                     <h2>Focus Timer</h2>
+                </div>
+
+                <div class="timer-duration-toggle">
+                    <button class="duration-btn active" data-duration="25">25 min</button>
+                    <button class="duration-btn" data-duration="60">60 min</button>
                 </div>
                 
                 <div class="timer-circle">
@@ -431,7 +540,7 @@
 
             <div class="heatmap-legend">
                 <span>Less</span>
-                <div class="legend-item" style="background: #edf2f7;"></div>
+                <div class="legend-item" style="background: var(--border-color);"></div>
                 <div class="legend-item" style="background: #dcfce7;"></div>
                 <div class="legend-item" style="background: #bbf7d0;"></div>
                 <div class="legend-item" style="background: #86efac;"></div>
@@ -443,15 +552,43 @@
 
         <!-- Visitor Counter -->
         <div class="visitor-counter">
-            👀 <span id="visitor-count">1,247</span> people have visited this page
+            👀 <span id="visitor-count">1</span> people have visited this page
         </div>
     </div>
 
     <script>
+        // Theme Toggle Logic
+        class ThemeManager {
+            constructor() {
+                this.themeToggle = document.getElementById('theme-toggle');
+                this.themeIcon = document.getElementById('theme-icon');
+                this.currentTheme = localStorage.getItem('theme') || 'light';
+                this.init();
+            }
+
+            init() {
+                this.setTheme(this.currentTheme);
+                this.themeToggle.addEventListener('click', () => this.toggleTheme());
+            }
+
+            setTheme(theme) {
+                document.documentElement.setAttribute('data-theme', theme);
+                this.themeIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
+                this.currentTheme = theme;
+                localStorage.setItem('theme', theme);
+            }
+
+            toggleTheme() {
+                const newTheme = this.currentTheme === 'light' ? 'dark' : 'light';
+                this.setTheme(newTheme);
+            }
+        }
+
         // Pomodoro Timer Logic
         class PomodoroTimer {
             constructor() {
-                this.timeLeft = 25 * 60; // 25 minutes in seconds
+                this.duration = 25; // Default 25 minutes
+                this.timeLeft = this.duration * 60;
                 this.isRunning = false;
                 this.completedSessions = parseInt(localStorage.getItem('completedSessions') || '0');
                 this.interval = null;
@@ -462,6 +599,7 @@
                 this.startBtn = document.getElementById('start-btn');
                 this.pauseBtn = document.getElementById('pause-btn');
                 this.resetBtn = document.getElementById('reset-btn');
+                this.durationBtns = document.querySelectorAll('.duration-btn');
                 
                 this.init();
             }
@@ -473,6 +611,23 @@
                 this.startBtn.addEventListener('click', () => this.start());
                 this.pauseBtn.addEventListener('click', () => this.pause());
                 this.resetBtn.addEventListener('click', () => this.reset());
+                
+                this.durationBtns.forEach(btn => {
+                    btn.addEventListener('click', () => this.setDuration(parseInt(btn.dataset.duration)));
+                });
+            }
+
+            setDuration(minutes) {
+                if (!this.isRunning) {
+                    this.duration = minutes;
+                    this.timeLeft = this.duration * 60;
+                    this.updateDisplay();
+                    
+                    // Update active button
+                    this.durationBtns.forEach(btn => {
+                        btn.classList.toggle('active', parseInt(btn.dataset.duration) === minutes);
+                    });
+                }
             }
             
             start() {
@@ -489,7 +644,7 @@
             
             reset() {
                 this.pause();
-                this.timeLeft = 25 * 60;
+                this.timeLeft = this.duration * 60;
                 this.updateDisplay();
             }
             
@@ -507,7 +662,7 @@
                 this.completedSessions++;
                 localStorage.setItem('completedSessions', this.completedSessions.toString());
                 this.updateSessions();
-                this.timeLeft = 25 * 60;
+                this.timeLeft = this.duration * 60;
                 this.updateDisplay();
                 
                 // Add to today's task completion
@@ -519,7 +674,7 @@
                 const seconds = this.timeLeft % 60;
                 this.timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
                 
-                const progress = ((25 * 60 - this.timeLeft) / (25 * 60)) * 283;
+                const progress = ((this.duration * 60 - this.timeLeft) / (this.duration * 60)) * 283;
                 this.timerProgress.setAttribute('stroke-dasharray', `${progress} 283`);
             }
             
@@ -614,8 +769,8 @@
             constructor() {
                 this.heatmapGrid = document.getElementById('heatmap-grid');
                 this.progressData = JSON.parse(localStorage.getItem('progressData') || '{}');
-                this.startDate = new Date();
-                this.startDate.setDate(this.startDate.getDate() - 89); // Start 89 days ago for 90-day view
+                // Start from June 1st, 2025
+                this.startDate = new Date(2025, 5, 1); // Month is 0-indexed, so 5 = June
                 
                 this.init();
             }
@@ -673,12 +828,19 @@
             }
             
             init() {
-                // Simulate visitor count with some randomness
-                const baseCount = 1247;
-                const randomVariation = Math.floor(Math.random() * 50) - 25;
-                const count = baseCount + randomVariation;
+                // Check if this is the first visit
+                let visitCount = parseInt(localStorage.getItem('visitorCount') || '0');
                 
-                this.animateCounter(count);
+                if (visitCount === 0) {
+                    // First time visitor
+                    visitCount = 1;
+                } else {
+                    // Returning visitor - simulate some growth
+                    visitCount += Math.floor(Math.random() * 3) + 1;
+                }
+                
+                localStorage.setItem('visitorCount', visitCount.toString());
+                this.animateCounter(visitCount);
             }
             
             animateCounter(targetCount) {
@@ -696,6 +858,7 @@
         }
 
         // Initialize all components
+        const themeManager = new ThemeManager();
         const pomodoroTimer = new PomodoroTimer();
         const todoList = new TodoList();
         const heatmapGrid = new HeatmapGrid();
