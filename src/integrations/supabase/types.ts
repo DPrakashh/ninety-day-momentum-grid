@@ -9,7 +9,108 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      daily_progress: {
+        Row: {
+          completed_tasks: number
+          completion_percentage: number
+          created_at: string
+          date: string
+          id: string
+          total_tasks: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_tasks?: number
+          completion_percentage?: number
+          created_at?: string
+          date: string
+          id?: string
+          total_tasks?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_tasks?: number
+          completion_percentage?: number
+          created_at?: string
+          date?: string
+          id?: string
+          total_tasks?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          id: string
+          updated_at: string
+          username: string
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          updated_at?: string
+          username: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          updated_at?: string
+          username?: string
+        }
+        Relationships: []
+      }
+      site_stats: {
+        Row: {
+          id: string
+          stat_name: string
+          stat_value: number
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          stat_name: string
+          stat_value?: number
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          stat_name?: string
+          stat_value?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      tasks: {
+        Row: {
+          completed: boolean
+          completed_at: string | null
+          created_at: string
+          id: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
